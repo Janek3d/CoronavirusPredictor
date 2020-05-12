@@ -3,6 +3,7 @@ import dash_html_components as html
 
 import layouts.style.style as style
 
+
 def main_layout():
     """Create main layout for app
 
@@ -38,12 +39,15 @@ def main_layout():
                     ),
                     html.Button(
                         id='url-button',
-                            n_clicks=0,
-                            children='Load',
-                            style={
-                                'margin': style.PADDING,
-                                'backgroundColor': style.BUTTON_COLOR
-                            }
+                        n_clicks=0,
+                        children='Load',
+                        style={
+                            'margin': style.PADDING,
+                            'backgroundColor': style.BUTTON_COLOR
+                        }
+                    ),
+                    html.H4(
+                        children='or',
                     ),
                     dcc.Upload(
                         id='upload-data',
@@ -59,6 +63,7 @@ def main_layout():
                             "borderRadius": "5px",
                             "textAlign": "center",
                             "margin": "10px",
+                            "margin-left": "30%",
                         },
                         multiple=False,
                     ),
@@ -66,14 +71,14 @@ def main_layout():
             ]
         )
     ],
-    style={
-        'text-align': 'center',
-        'font-family': 'helvetica',
-        'position': 'absolute',
-        'top': '0',
-        'left': '0',
-        'width': '100%',
-        'height': '100%',
-        'backgroundColor': '#FFFFFF'
+        style={
+            'text-align': 'center',
+            'font-family': 'helvetica',
+            'position': 'absolute',
+            'top': '0',
+            'left': '0',
+            'width': '100%',
+            'height': '100%',
+            'backgroundColor': '#FFFFFF'
     })
     return layout
