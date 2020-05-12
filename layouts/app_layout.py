@@ -2,14 +2,17 @@ import dash_core_components as dcc
 import dash_html_components as html
 
 import layouts.style.style as style
+from layouts.graph_layout import graph_layout
 
 
 def main_layout():
     """Create main layout for app
 
     :return: GUI layout as dash component
-    :rtype: dash,development.base_component.ComponentMeta
+    :rtype: dash.development.base_component.ComponentMeta
     """
+    default_web_data = \
+        'https://raw.githubusercontent.com/dtandev/coronavirus/master/data/CoronavirusPL%20-%20General.csv'
     layout = html.Div([
         html.Div(
             [
@@ -35,8 +38,11 @@ def main_layout():
                     ),
                     html.Datalist(
                         id='url_history',
-                        children=[]
-                    ),
+                        children=[
+                            html.Option(
+                                value=default_web_data
+                            )
+                        ]),
                     html.Button(
                         id='url-button',
                         n_clicks=0,
@@ -69,7 +75,8 @@ def main_layout():
                     ),
                 ]),
             ]
-        )
+        ),
+        graph_layout(),
     ],
         style={
             'text-align': 'center',

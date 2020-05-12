@@ -1,11 +1,11 @@
 import dash
 import unittest
 
-from ..app_layout import main_layout
+from ..graph_layout import graph_layout
 
 
 class TestMainLayout(unittest.TestCase):
 
-    def test_main_layout_content(self):
-        self.assertIsInstance(type(main_layout()),
+    def test_graph_layout_content(self):
+        self.assertIsInstance(type(graph_layout()),
                               dash.development.base_component.ComponentMeta)

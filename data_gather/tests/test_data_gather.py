@@ -1,4 +1,5 @@
 from mock import patch
+import os
 from parameterized import parameterized
 from pyfakefs import fake_filesystem_unittest
 
@@ -74,3 +75,4 @@ class TestCreateDataFrame(fake_filesystem_unittest.TestCase):
             f.write(mock_create_data['linux.test'])
         df = create_data_frame('testfile')
         assert_frame_equal(df, self.expectedDF)
+        os.remove('testfile')
