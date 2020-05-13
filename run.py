@@ -5,7 +5,7 @@ from dash.dependencies import Input, Output, State
 import flask
 
 from layouts.app_layout import main_layout
-import callbacks.callbacks as call
+from callbacks.callbacks import CovidEstimator
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 server = flask.Flask(__name__)
@@ -13,6 +13,7 @@ app = Dash(
     __name__, server=server, external_stylesheets=external_stylesheets)
 app.layout = main_layout()
 app.title = 'COVID-19 in Poland'
+covid_estimator = CovidEstimator()
 
 
 @app.callback(
@@ -25,9 +26,10 @@ app.title = 'COVID-19 in Poland'
 def load_data(n_clicks, contents, filename, value):
     if n_clicks or filename:
         if filename:
-            return call.load_data(filename)
+            covid_estimator.load_data(filename)
         else:
-            return call.load_data(value, web=True)
+            covid_estimator.load_data(value, web=True)
+        return covid_estimator.data.info()
 
 
 if __name__ == '__main__':
