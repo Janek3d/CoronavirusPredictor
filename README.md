@@ -5,3 +5,6 @@
 
 ## Remote Data
 URL to csv file on GitHub: [link](https://raw.githubusercontent.com/dtandev/coronavirus/master/data/CoronavirusPL%20-%20General.csv)
+
+## Sources for learning
+Some algoruths with examples that I use: [link](https://machinelearningmastery.com/time-series-forecasting-methods-in-python-cheat-sheet/)

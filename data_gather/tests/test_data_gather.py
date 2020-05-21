@@ -2,6 +2,7 @@ from mock import patch
 import os
 from parameterized import parameterized
 from pyfakefs import fake_filesystem_unittest
+from datetime import datetime
 
 from requests.exceptions import MissingSchema
 from pandas.util.testing import assert_frame_equal
@@ -16,8 +17,10 @@ mock_data_url = {
 }
 
 mock_create_data = {
-    "linux.test": "a,b,c\n1,veni,0.9\n2,vidi,0.8\n3,vici,0.7",
-    'windows.test': "a,b,c\\r\\n1,veni,0.9\\r\\n2,vidi,0.8\\r\\n3,vici,0.7"
+    "linux.test":
+    "Timestamp,Confirmed,Deaths,Recovered,In_the_hospital,In_quarantine,Under_medical_supervision,Number_of_tests_carried_out\n03-03-2020,0,0,0,68,316,4459,559\n04-03-2020,1,0,0,65,349,4540,584\n05-03-2020,1,0,0,92,490,5647,676",
+    "windows.test":
+    "Timestamp,Confirmed,Deaths,Recovered,In_the_hospital,In_quarantine,Under_medical_supervision,Number_of_tests_carried_out\\r\\n03-03-2020,0,0,0,68,316,4459,559\\r\\n04-03-2020,1,0,0,65,349,4540,584\\r\\n05-03-2020,1,0,0,92,490,5647,676"
 }
 
 
@@ -36,7 +39,6 @@ def url_get_mock(url):
 
 
 class TestDownloadDataFromWeb(fake_filesystem_unittest.TestCase):
-
     def SetUp(self):
         self.setUpPyfakefs()
 
@@ -55,10 +57,52 @@ class TestDownloadDataFromWeb(fake_filesystem_unittest.TestCase):
 
 class TestCreateDataFrame(fake_filesystem_unittest.TestCase):
 
-    expectedDF = DataFrame(data={
-        'a': [1, 2, 3],
-        'b': ['veni', 'vidi', 'vici'],
-        'c': [0.9, 0.8, 0.7]
+    expectedDF = DataFrame.from_dict({
+        'Timestamp': {
+            0: datetime(2020, 3, 3),
+            1: datetime(2020, 3, 4),
+            2: datetime(2020, 3, 5)
+        },
+        'Confirmed': {
+            0: 0,
+            1: 1,
+            2: 1
+        },
+        'Deaths': {
+            0: 0,
+            1: 0,
+            2: 0
+        },
+        'Recovered': {
+            0: 0,
+            1: 0,
+            2: 0
+        },
+        'In_the_hospital': {
+            0: 68,
+            1: 65,
+            2: 92
+        },
+        'In_quarantine': {
+            0: 316,
+            1: 349,
+            2: 490
+        },
+        'Under_medical_supervision': {
+            0: 4459,
+            1: 4540,
+            2: 5647
+        },
+        'Number_of_tests_carried_out': {
+            0: 559,
+            1: 584,
+            2: 676
+        },
+        'Sick': {
+            0: 0,
+            1: 1,
+            2: 1
+        }
     })
 
     def SetUp(self):
@@ -68,6 +112,7 @@ class TestCreateDataFrame(fake_filesystem_unittest.TestCase):
     @patch('requests.get', side_effect=url_get_mock)
     def test_url_source_linux_formatting(self, url, mock_get):
         df = create_data_frame(url, web=True)
+        print(df.to_dict())
         assert_frame_equal(df, self.expectedDF)
 
     def test_data_from_file(self):

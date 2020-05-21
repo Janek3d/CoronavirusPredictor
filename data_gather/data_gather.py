@@ -2,7 +2,7 @@ import os
 import requests
 import tempfile
 
-from pandas import read_csv
+from pandas import read_csv, to_datetime
 
 
 def download_data_from_web(url):
@@ -38,4 +38,7 @@ def create_data_frame(source, web=False):
     """
     if web:
         source = download_data_from_web(source)
-    return read_csv(source, lineterminator=os.linesep)
+    data = read_csv(source, lineterminator=os.linesep)
+    data["Timestamp"] = to_datetime(data["Timestamp"], format="%d-%m-%Y")
+    data["Sick"] = data["Confirmed"] - data["Deaths"] - data["Recovered"]
+    return data
