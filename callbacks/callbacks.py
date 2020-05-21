@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from statsmodels.tsa.ar_model import AutoReg
+from statsmodels.tsa.arima_model import ARMA
 
 from data_gather.data_gather import create_data_frame
 
@@ -47,6 +48,14 @@ class CovidEstimator:
         if len(self._data) < 3:
             raise Exception('Please provide data with more points')
         model = AutoReg(self._data["Sick"], lags=int(len(self._data) / 3))
+        self._model = model.fit()
+
+    def train_MA(self):
+        """Train Autoregressive Integrated Moving Average
+        """
+        if len(self._data) < 3:
+            raise Exception('Please provide data with more points')
+        model = ARMA(self._data["Sick"], order=(0, 1))
         self._model = model.fit()
 
     def predict(self):
