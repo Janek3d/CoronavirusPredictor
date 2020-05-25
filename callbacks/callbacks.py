@@ -55,7 +55,7 @@ class CovidEstimator:
         """
         if len(self._data) < 3:
             raise Exception('Please provide data with more points')
-        model = ARMA(self._data["Sick"], order=(0, 1))
+        model = ARMA(self._data["Sick"], order=(3, 2))
         self._model = model.fit()
 
     def predict(self):
