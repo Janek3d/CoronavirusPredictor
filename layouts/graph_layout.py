@@ -9,7 +9,7 @@ def graph_layout():
     """
     layout = html.Div([
         html.H1(
-            id='graph',
+            id='covid-graph',
             children='Graph placeholder',
             style={
                 'font-family': 'helvetica',

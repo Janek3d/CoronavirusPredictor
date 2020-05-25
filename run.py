@@ -3,6 +3,7 @@
 from dash import Dash
 from dash.dependencies import Input, Output, State
 import flask
+from datetime import datetime
 
 from layouts.app_layout import main_layout
 from callbacks.callbacks import CovidEstimator
@@ -17,7 +18,7 @@ covid_estimator = CovidEstimator()
 
 
 @app.callback(
-    Output('graph', 'children'),  # TODO: Change to figure with proper graph
+    Output('covid-graph', 'children'),  # TODO: Change to figure with proper graph
     [Input('url-button', 'n_clicks'),
      Input('upload-data', 'contents')],
     [State('upload-data', 'filename'),
@@ -29,7 +30,10 @@ def load_data(n_clicks, contents, filename, value):
             covid_estimator.load_data(filename)
         else:
             covid_estimator.load_data(value, web=True)
-        return covid_estimator.data.info()
+        covid_estimator.set_predict_horizon(datetime(2020, 6, 30))
+        covid_estimator.train_AR()
+        covid_estimator.predict()
+        return covid_estimator.get_dcc_Graph()
 
 
 if __name__ == '__main__':
