@@ -1,3 +1,4 @@
+import dash_core_components as dcc
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -55,7 +56,7 @@ class CovidEstimator:
         """
         if len(self._data) < 3:
             raise Exception('Please provide data with more points')
-        model = ARMA(self._data["Sick"], order=(3, 2))
+        model = ARMA(self._data["Sick"], order=(3, 1))
         self._model = model.fit()
 
     def predict(self):
@@ -83,6 +84,45 @@ class CovidEstimator:
         self._data.plot(x="Timestamp", y="Sick", ax=ax1)
         plt.grid()
         plt.show()
+
+    def get_dcc_Graph(self):
+        """Returns dash core component Graph with predicted data
+
+        :return: Dash Core Component Graph with data and predictions
+        :rtype: dash_core_components.Graph.Graph
+        """
+        return dcc.Graph(
+            figure=dict(
+                data=[
+                    dict(
+                        x=list(self._data["Timestamp"]),
+                        y=list(self._data["Sick"]),
+                        name='Historical data',
+                        marker=dict(
+                          color='rgb(55, 83, 109)'
+                        )
+                    ),
+                    dict(
+                        x=self._horizon,
+                        y=self._predicted_data,
+                        name='Prediction',
+                        marker=dict(
+                            color='rgb(26, 118, 255)'
+                            )
+                        )
+                    ],
+                layout=dict(
+                    title='COVID-19 Sick People Prediction',
+                    showlegend=True,
+                    legend=dict(
+                        x=0,
+                        y=1.0
+                    ),
+                    margin=dict(l=40, r=0, t=40, b=30)
+                )
+            ),
+            id='covid-graph'
+        )
 
     @property
     def data(self):
