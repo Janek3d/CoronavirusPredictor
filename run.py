@@ -2,10 +2,11 @@
 
 from dash import Dash
 from dash.dependencies import Input, Output, State
-import flask
 from datetime import datetime
+import flask
+import re
 
-from layouts.app_layout import main_layout
+from layouts.app_layout import main_layout, data_loaded_info
 from callbacks.callbacks import CovidEstimator
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -18,7 +19,7 @@ covid_estimator = CovidEstimator()
 
 
 @app.callback(
-    Output('covid-graph', 'children'),  # TODO: Change to figure with proper graph
+    Output('info-out', 'children'),
     [Input('url-button', 'n_clicks'),
      Input('upload-data', 'contents')],
     [State('upload-data', 'filename'),
@@ -30,8 +31,21 @@ def load_data(n_clicks, contents, filename, value):
             covid_estimator.load_data(filename)
         else:
             covid_estimator.load_data(value, web=True)
-        covid_estimator.set_predict_horizon(datetime(2020, 6, 30))
-        covid_estimator.train_AR()
+        return data_loaded_info()
+
+@app.callback(
+    Output('covid-graph', 'children'),
+    [Input('predict-button', 'n_clicks')],
+    [State('horizon-picker', 'date'),
+     State('model-radio', 'value')])
+def predict(n_clicks, date, value):
+    if n_clicks:
+        date = datetime.strptime(re.split('T| ', date)[0], '%Y-%m-%d')
+        covid_estimator.set_predict_horizon(date)
+        if value == "AR":
+            covid_estimator.train_AR()
+        else:
+            covid_estimator.train_MA()
         covid_estimator.predict()
         return covid_estimator.get_dcc_Graph()
 

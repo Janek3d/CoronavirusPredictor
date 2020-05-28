@@ -1,9 +1,102 @@
 import dash_core_components as dcc
 import dash_html_components as html
+from datetime import datetime
 
 import layouts.style.style as style
-from layouts.graph_layout import graph_layout
 
+DEFAULT_WEB_DATA = \
+    'https://raw.githubusercontent.com/dtandev/coronavirus/master/data/CoronavirusPL%20-%20General.csv'
+
+
+def upload_data_layout():
+    """Function for generating layout section for uploading data from web or file
+
+    :return: Generated layout
+    :rtype: dash.development.base_component.ComponentMeta
+    """
+    return html.Div([
+        dcc.Input(
+            id='url',
+            placeholder='URL to data csv',
+            list='url_history',
+            style={
+                "textAlign": "center",
+            },
+        ),
+        html.Datalist(
+            id='url_history',
+            children=[
+                html.Option(
+                    value=DEFAULT_WEB_DATA
+                )
+            ]),
+        html.Button(
+            id='url-button',
+            n_clicks=0,
+            children='Load',
+            style={
+                'margin': style.PADDING,
+                'backgroundColor': style.BUTTON_COLOR
+            }
+        ),
+        html.H4(
+            children='or',
+        ),
+        dcc.Upload(
+            id='upload-data',
+            children=html.Div(
+                ["Drap and drop or click to select a file to upload"]
+            ),
+            style={
+                "width": "40%",
+                "height": "60px",
+                "lineHeight": "60px",
+                "borderWidth": "1px",
+                "borderStyle": "dashed",
+                "borderRadius": "5px",
+                "textAlign": "center",
+                "margin": "10px",
+                "margin-left": "30%",
+            },
+            multiple=False,
+        ),
+    ])
+
+def predict_horizon_layout():
+    """Function for generating layout section for selecting predict horizon
+
+    :return: Generated layout
+    :rtype: dash.development.base_component.ComponentMeta
+    """
+    return html.Div([
+        html.H6(
+            children='Set predict horizon:',
+            style={
+                "display": "inline-block"
+            }
+        ),
+        dcc.DatePickerSingle(
+            id='horizon-picker',
+            date=datetime(2020, 7, 20),
+        )
+    ])
+
+def graph_layout():
+    """Function for generating dummy graph layout with its components.
+
+    :return: Graph layout as dash component
+    :rtype: dash.development.base_component.ComponentMeta
+    """
+    return html.Div([
+        html.H4(
+            id='info-out',
+            children=""
+        ),
+        html.H1(
+            id='covid-graph',
+            children=""
+        ),
+    ])
 
 def main_layout():
     """Create main layout for app
@@ -11,9 +104,7 @@ def main_layout():
     :return: GUI layout as dash component
     :rtype: dash.development.base_component.ComponentMeta
     """
-    default_web_data = \
-        'https://raw.githubusercontent.com/dtandev/coronavirus/master/data/CoronavirusPL%20-%20General.csv'
-    layout = html.Div([
+    return html.Div([
         html.Div(
             [
                 html.H1(
@@ -26,56 +117,22 @@ def main_layout():
                         'vertical-align': 'text-top'
                     }
                 ),
-                # Data Load section
-                html.Div([
-                    dcc.Input(
-                        id='url',
-                        placeholder='URL to data csv',
-                        list='url_history',
-                        style={
-                            "textAlign": "center",
-                        },
-                    ),
-                    html.Datalist(
-                        id='url_history',
-                        children=[
-                            html.Option(
-                                value=default_web_data
-                            )
-                        ]),
-                    html.Button(
-                        id='url-button',
-                        n_clicks=0,
-                        children='Load',
-                        style={
-                            'margin': style.PADDING,
-                            'backgroundColor': style.BUTTON_COLOR
-                        }
-                    ),
-                    html.H4(
-                        children='or',
-                    ),
-                    dcc.Upload(
-                        id='upload-data',
-                        children=html.Div(
-                            ["Drap and drop or click to select a file to upload"]
-                        ),
-                        style={
-                            "width": "40%",
-                            "height": "60px",
-                            "lineHeight": "60px",
-                            "borderWidth": "1px",
-                            "borderStyle": "dashed",
-                            "borderRadius": "5px",
-                            "textAlign": "center",
-                            "margin": "10px",
-                            "margin-left": "30%",
-                        },
-                        multiple=False,
-                    ),
-                ]),
-            ]
+        upload_data_layout(),
+        predict_horizon_layout(),
+        dcc.RadioItems(
+            id='model-radio',
+            options=[
+                {'label': 'AR model', 'value': 'AR'},
+                {'label': 'MA model', 'value': 'MA'}
+            ],
+            value='AR',
+            labelStyle={'display': 'inline-block'}
         ),
+        html.Button(
+            'Predict',
+            id='predict-button',
+        )
+        ]),
         graph_layout(),
     ],
         style={
@@ -88,4 +145,14 @@ def main_layout():
             'height': '100%',
             'backgroundColor': '#FFFFFF'
     })
-    return layout
+
+def data_loaded_info():
+    """Get simple information that data has been loaded
+
+    :return: Header with information
+    :rtype: dash.development.base_component.ComponentMeta
+    """
+    return html.H4(
+        children="Data loaded",
+        id='covid-graph'
+    )
