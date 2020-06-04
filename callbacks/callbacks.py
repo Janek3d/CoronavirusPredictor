@@ -48,7 +48,7 @@ class CovidEstimator:
         """
         if len(self._data) < 3:
             raise Exception('Please provide data with more points')
-        model = AutoReg(self._data["Sick"], lags=int(len(self._data) / 3))
+        model = AutoReg(self._data["D2D-deaths"], lags=int(len(self._data) / 3))
         self._model = model.fit()
 
     def train_MA(self):
@@ -56,7 +56,7 @@ class CovidEstimator:
         """
         if len(self._data) < 3:
             raise Exception('Please provide data with more points')
-        model = ARMA(self._data["Sick"], order=(3, 1))
+        model = ARMA(self._data["D2D-deaths"], order=(3, 1))
         self._model = model.fit()
 
     def predict(self):
@@ -69,7 +69,7 @@ class CovidEstimator:
                 len(self._data) + len(self._horizon))[2:]
             self._predicted_data = pd.concat([
                 pd.Series(
-                    self._data.sort_values(by="Timestamp")["Sick"].values[-1]),
+                    self._data.sort_values(by="Timestamp")["D2D-deaths"].values[-1]),
                 self._predicted_data
             ])
         else:
@@ -81,7 +81,7 @@ class CovidEstimator:
         """
         _, ax1 = plt.subplots(1)
         ax1.plot(self._horizon, self._predicted_data)
-        self._data.plot(x="Timestamp", y="Sick", ax=ax1)
+        self._data.plot(x="Timestamp", y="D2D-deaths", ax=ax1)
         plt.grid()
         plt.show()
 
@@ -96,7 +96,7 @@ class CovidEstimator:
                 data=[
                     dict(
                         x=list(self._data["Timestamp"]),
-                        y=list(self._data["Sick"]),
+                        y=list(self._data["D2D-deaths"]),
                         name='Historical data',
                         marker=dict(
                           color='rgb(55, 83, 109)'
@@ -112,7 +112,7 @@ class CovidEstimator:
                         )
                     ],
                 layout=dict(
-                    title='COVID-19 Sick People Prediction',
+                    title='COVID-19 day to day deaths People Prediction',
                     showlegend=True,
                     legend=dict(
                         x=0,
