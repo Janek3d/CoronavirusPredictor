@@ -41,4 +41,5 @@ def create_data_frame(source, web=False):
     data = read_csv(source, lineterminator=os.linesep)
     data["Timestamp"] = to_datetime(data["Timestamp"], format="%d-%m-%Y")
     data["Sick"] = data["Confirmed"] - data["Deaths"] - data["Recovered"]
+    data['D2D-deaths'] = data['Deaths'] - data['Deaths'].shift(1, fill_value=0)
     return data
