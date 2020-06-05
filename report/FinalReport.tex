@@ -38,7 +38,7 @@ COVID-19, Machine learning, Autoregression.
 \section{Introduction}
 Current coronavirus pandemic started in chinese Wuhan, in December 2019. On 11 March WHO made the assessment that COVID-19 can be
  characterized as pandemic which became global problem. On 4 March first case in Poland appeared. From this time number of confirmed cases was steadily increasing.
- Month later there was 5000 confirmed cases. 
+ Month later there was 5000 confirmed cases.
 
 \dots
 
@@ -74,7 +74,50 @@ ARMA(p,q) notation refers to AR(p) and MA(q) models:
 \begin{equation}
     X_t = c + \epsilon_t +\sum_{i=1}^{p} (\phi_iX_{t-i}) + \sum_{i=1}^{q} (\theta_i\epsilon_{t-i})
 \end{equation}
-\dots
+
+
+Project structure is organised into consistent class which implements methods for gathering data, training machine learning model and data visualization.
+\newline
+\newline
+Data gathering is separate module that allows to download data in the runtime from provided web server or load data from local file.
+Data format has to be consistent with format provided by user dtandev in repository "coronavirus" published on GitHub platform.
+Data is presented as summarized numbers per columns starting from 3rd March 2020.
+Because of that data gathering module on reading raw data has additonal steps which
+\begin{itemize}
+\item Based on data in columns 'Deaths' counted are 'Day-to-day Deaths' in order to normalize training data to not have only incrementing trend.
+\item Based on data of 'Confirmed' minus values from 'Deaths' and 'Recovered' is computed data of currently sick people in Poland.
+\end{itemize}
+Complete data is returned in Pandas DataFrame.
+\newline
+\newline
+Main class contain methods which implement steps easy to split for external resources e.g. GUI applications:
+\begin{itemize}
+\item \textit{load\_data} - implements data gathering model to load data from web or local file. It is possible to provide data also as complete DataFrame during object initialization.
+\item \textit{set\_predict\_horizon} - sets data up to which next data points should be predicted. Data should be datatime object from datatime library.
+\item \textit{train\_AR} - method which trains Autoregression model based on previously loaded data.
+\item \textit{train\_MA} - method which trains Autoregressive Integrated Moving Average model based on previously loaded data.
+\item \textit{predict} - Because it is possible to alternatively train model with two separate methods then this method uses one of models (the one that was run as last) and predicts next data points up to predict horizon.
+\item \textit{plt} - this method prints out matplotlib plot with actual data and predicted data points.
+\item \textit{get\_dcc\_Graph} - this method returns Dash Core Components Graph with actual data and predicted data which may be used with GUI applications created in Dash
+\end{itemize}
+Presented project utilizes Dash library in order to implement user-friendly application.
+\begin{figure}[h!]
+    \includegraphics[width=\linewidth]{images/gui1.png}
+    \caption{User welcome screen}
+    \label{fig:gui1}
+\end{figure}
+\newline
+User at the first site layout have simple control which allow to load data from pasted URL (by default URL to data from dtandev/coronavirus repository is available to choose from text field) or local file.
+Afterwards, user has possiblity to set data which will be used as predict horizon adn finally choose one of two training models.
+\newline
+When user clicks 'Predict' button then below is generated interactive Dash Core Component Graph.
+\begin{figure}[h!]
+    \includegraphics[width=\linewidth]{images/gui2.png}
+    \caption{Application after setting parameters and prediction process}
+    \label{fig:gui2}
+\end{figure}
+\newline
+User has always possiblity to modify parameters and repeat prediction from any point of process.
 
 \section{Machine Learning Models}
 We are using AutoReg function from statsmodel library. This function uses Autoregressive. It uses only vector of values we want to predict.
@@ -92,7 +135,7 @@ We are using AutoReg function from statsmodel library. This function uses Autore
 \bibitem{b1} https://www.sciencedirect.com/science/article/pii/0047259X85900272
 \bibitem{b2} https://link.springer.com/chapter/10.1007/978-1-4612-1694-0\_12
 \bibitem{b3} https://journals.ametsoc.org/doi/full/10.1175/JHM517.1
-\bibitem{b4}
+\bibitem{b4} https://github.com/dtandev/coronavirus
 \bibitem{b5}
 \bibitem{b6}
 \bibitem{b7}
