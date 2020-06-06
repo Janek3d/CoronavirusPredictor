@@ -17,10 +17,14 @@ mock_data_url = {
 }
 
 mock_create_data = {
-    "linux.test":
-    "Timestamp,Confirmed,Deaths,Recovered,In_the_hospital,In_quarantine,Under_medical_supervision,Number_of_tests_carried_out\n03-03-2020,0,0,0,68,316,4459,559\n04-03-2020,1,1,0,65,349,4540,584\n05-03-2020,5,3,0,92,490,5647,676",
-    "windows.test":
-    "Timestamp,Confirmed,Deaths,Recovered,In_the_hospital,In_quarantine,Under_medical_supervision,Number_of_tests_carried_out\\r\\n03-03-2020,0,0,0,68,316,4459,559\\r\\n04-03-2020,1,1,0,65,349,4540,584\\r\\n05-03-2020,5,3,0,92,490,5647,676"
+    "linux.test.dtandev":
+    "Timestamp,Confirmed,Deaths,Recovered,In_the_hospital,In_quarantine,Under_medical_supervision,Number_of_tests_carried_out\n03-03-2020,0,0,0,68,316,4459,559\n04-03-2020,1,1,0,65,349,4540,584",
+    "windows.test.dtandev":
+    "Timestamp,Confirmed,Deaths,Recovered,In_the_hospital,In_quarantine,Under_medical_supervision,Number_of_tests_carried_out\\r\\n03-03-2020,0,0,0,68,316,4459,559\\r\\n04-03-2020,1,1,0,65,349,4540,584",
+    "linux.test.anuszka":
+    'Data,Dzień,Wykryci zakażeni,Testy,Hospitalizowani,Zmarli,Kwarantanna,Nadzór,"Testy, wartości przybliżone",Kwarantanna po powrocie do kraju,Wydarzenia,Wyzdrowiali,Testowane osoby\n03/03/20,,,,,0,,,,,,,\n04/03/20,,,,,1,,,,,,,',
+    "windows.test.anuszka":
+    'Data,Dzień,Wykryci zakażeni,Testy,Hospitalizowani,Zmarli,Kwarantanna,Nadzór,"Testy, wartości przybliżone",Kwarantanna po powrocie do kraju,Wydarzenia,Wyzdrowiali,Testowane osoby\\r\\n03/03/20,,,,,0,,,,,,,\\r\\n04/03/20,,,,,1,,,,,,,'
 }
 
 
@@ -60,53 +64,11 @@ class TestCreateDataFrame(fake_filesystem_unittest.TestCase):
     expectedDF = DataFrame.from_dict({
         'Timestamp': {
             0: datetime(2020, 3, 3),
-            1: datetime(2020, 3, 4),
-            2: datetime(2020, 3, 5)
-        },
-        'Confirmed': {
-            0: 0,
-            1: 1,
-            2: 5
-        },
-        'Deaths': {
-            0: 0,
-            1: 1,
-            2: 3
-        },
-        'Recovered': {
-            0: 0,
-            1: 0,
-            2: 0
-        },
-        'In_the_hospital': {
-            0: 68,
-            1: 65,
-            2: 92
-        },
-        'In_quarantine': {
-            0: 316,
-            1: 349,
-            2: 490
-        },
-        'Under_medical_supervision': {
-            0: 4459,
-            1: 4540,
-            2: 5647
-        },
-        'Number_of_tests_carried_out': {
-            0: 559,
-            1: 584,
-            2: 676
-        },
-        'Sick': {
-            0: 0,
-            1: 0,
-            2: 2
+            1: datetime(2020, 3, 4)
         },
         'D2D-deaths': {
             0: 0,
-            1: 1,
-            2: 2
+            1: 1
         }
     })
 
@@ -122,7 +84,7 @@ class TestCreateDataFrame(fake_filesystem_unittest.TestCase):
 
     def test_data_from_file(self):
         with open('testfile', 'w') as f:
-            f.write(mock_create_data['linux.test'])
+            f.write(mock_create_data['linux.test.dtandev'])
         df = create_data_frame('testfile')
         assert_frame_equal(df, self.expectedDF)
         os.remove('testfile')

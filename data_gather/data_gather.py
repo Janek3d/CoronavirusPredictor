@@ -24,6 +24,20 @@ def download_data_from_web(url):
     return tmp_path
 
 
+def parse_dtandev_format(data):
+    data["Timestamp"] = to_datetime(data["Timestamp"], format="%d-%m-%Y")
+    data['D2D-deaths'] = data['Deaths'] - data['Deaths'].shift(1, fill_value=0)
+    return data[['Timestamp', 'D2D-deaths']]
+
+
+def parse_anuszka_format(data):
+    data['Data'] = to_datetime(data['Data'], dayfirst=True)
+    data = data[data['Zmarli'].notna()]
+    data['D2D-deaths'] = data['Zmarli'] - data['Zmarli'].shift(1, fill_value=0)
+    data = data.rename(columns={'Data': 'Timestamp'})
+    return data[['Timestamp', 'D2D-deaths']]
+
+
 def create_data_frame(source, web=False):
     """
     Function for creating data frame from web or local data
@@ -39,7 +53,10 @@ def create_data_frame(source, web=False):
     if web:
         source = download_data_from_web(source)
     data = read_csv(source, lineterminator=os.linesep)
-    data["Timestamp"] = to_datetime(data["Timestamp"], format="%d-%m-%Y")
-    data["Sick"] = data["Confirmed"] - data["Deaths"] - data["Recovered"]
-    data['D2D-deaths'] = data['Deaths'] - data['Deaths'].shift(1, fill_value=0)
+    if 'Zmarli' in data.columns:
+        return parse_anuszka_format(data)
+    elif 'Deaths' in data.columns:
+        return parse_dtandev_format(data)
+    else:
+        raise Exception('Could not detect format of loaded data')
     return data
