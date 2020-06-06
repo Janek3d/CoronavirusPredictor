@@ -137,3 +137,11 @@ class CovidEstimator:
         :rtype: pandas.core.frame.DataFrame
         """
         return self._data
+
+    @property
+    def model(self):
+        """Return class trained model
+        :return: Class model
+        :rtype: statsmodels.tsa.arima.ARIMAResults
+        """
+        return self._model
