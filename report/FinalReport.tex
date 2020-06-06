@@ -118,6 +118,12 @@ When user clicks 'Predict' button then below is generated interactive Dash Core 
 \end{figure}
 \newline
 User has always possiblity to modify parameters and repeat prediction from any point of process.
+\newline
+\newline
+All project is covered with unit tests which are used as regression tests for project to make sure that with every code edition all other components still work properly.
+Tests are run automatically in every Pull Request created on GitHub platform of project (currently private repository) with CircleCI platform.
+Test job was created with tox tool which contains two test jobs.
+One runs unit tests and second one run flake8 command which tests code compability with PEP8 standard.
 
 \section{Machine Learning Models}
 We are using AutoReg function from statsmodel library. This function uses Autoregressive. It uses only vector of values we want to predict.
