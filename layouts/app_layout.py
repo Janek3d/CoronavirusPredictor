@@ -75,9 +75,11 @@ def predict_horizon_layout():
                 "display": "inline-block"
             }
         ),
-        dcc.DatePickerSingle(
+        dcc.DatePickerRange(
             id='horizon-picker',
-            date=datetime(2020, 7, 20),
+            start_date=datetime(2020, 5, 20),
+            min_date_allowed=datetime(2020, 3, 3),
+            end_date=datetime(2020, 7, 20),
         )
     ])
 

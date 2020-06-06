@@ -1,4 +1,5 @@
 import dash_core_components as dcc
+from datetime import datetime
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -19,19 +20,24 @@ class CovidEstimator:
         :type data: pandas.core.frame.DataFrame
         """
         self._data = data
+        self._horizon_min = datetime(2020, 3, 3)
 
-    def set_predict_horizon(self, horizon):
+    def set_predict_horizon(self, horizon_min, horizon_max):
         """Set predict horizon to which estimator should predict newxt data points
 
-        :param horizon: specific data in the future (should be greater than max data date)
-        :type horizon: datetime.datetime
+        :param horizon_min: Start date of prediction
+        :type horizon_min: datetime.datetime
+        :param horizon_max: Stop date of prediction
+        :type horizon_max: datetime.datetime
         """
+        if horizon_max < horizon_min:
+            raise Exception("Max horizon date may not me lower than min horizon date")
         data_max = max(self._data["Timestamp"])
-        if horizon < data_max:
-            raise Exception("Predict horizon may not be lower than data")
-        time_delta = horizon - data_max
-        self._horizon = self._data.sort_values(
-            by="Timestamp")["Timestamp"].values[-1] + pd.to_timedelta(
+        if horizon_min > data_max:
+            raise Exception("Prediction may not start after end of actual data")
+        self._horizon_min = horizon_min
+        time_delta = horizon_max - horizon_min
+        self._horizon = horizon_min + pd.to_timedelta(
                 np.arange(time_delta.days + 1), 'D')
 
     def load_data(self, source, web=False):
@@ -69,7 +75,7 @@ class CovidEstimator:
                 len(self._data) + len(self._horizon))[2:]
             self._predicted_data = pd.concat([
                 pd.Series(
-                    self._data.sort_values(by="Timestamp")["D2D-deaths"].values[-1]),
+                    self._data.loc[self._data['Timestamp']==self._horizon_min]["D2D-deaths"]),
                 self._predicted_data
             ])
         else:
