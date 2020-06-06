@@ -83,10 +83,10 @@ Data gathering is separate module that allows to download data in the runtime fr
 Data format has to be consistent with format provided by user dtandev in repository "coronavirus" published on GitHub platform.
 Data is presented as summarized numbers per columns starting from 3rd March 2020.
 Because of that data gathering module on reading raw data has additonal steps which
-\begin{itemize}
-\item Based on data in columns 'Deaths' counted are 'Day-to-day Deaths' in order to normalize training data to not have only incrementing trend.
-\item Based on data of 'Confirmed' minus values from 'Deaths' and 'Recovered' is computed data of currently sick people in Poland.
-\end{itemize}
+detects which one of two supported formats are used in data.
+Currently project supports data presented in csv files with columns named as data presented in GitHub repositories anuszka/COVID-19-MZ\_GOV\_PL or dtandev/coronavirus.
+These two repositories were originally choosen as source of data for machien learning model.
+Additonaly, data is parsed to return only columns containing dates and day-to-day deaths which are calculated from summarized deaths since start of pandemic.
 Complete data is returned in Pandas DataFrame.
 \newline
 \newline
@@ -120,9 +120,12 @@ When user clicks 'Predict' button then below is generated interactive Dash Core 
 User has always possiblity to modify parameters and repeat prediction from any point of process.
 \newline
 \newline
-All project is covered with unit tests which are used as regression tests for project to make sure that with every code edition all other components still work properly.
+Whole project is covered with unit tests which are used as regression tests for project to make sure that with every code edition all other components still work properly.
+\newline
 Tests are run automatically in every Pull Request created on GitHub platform of project (currently private repository) with CircleCI platform.
+\newline
 Test job was created with tox tool which contains two test jobs.
+\newline
 One runs unit tests and second one run flake8 command which tests code compability with PEP8 standard.
 
 \section{Machine Learning Models}
@@ -142,7 +145,7 @@ We are using AutoReg function from statsmodel library. This function uses Autore
 \bibitem{b2} https://link.springer.com/chapter/10.1007/978-1-4612-1694-0\_12
 \bibitem{b3} https://journals.ametsoc.org/doi/full/10.1175/JHM517.1
 \bibitem{b4} https://github.com/dtandev/coronavirus
-\bibitem{b5}
+\bibitem{b5} https://github.com/anuszka/COVID-19-MZ_GOV_PL
 \bibitem{b6}
 \bibitem{b7}
 \end{thebibliography}
