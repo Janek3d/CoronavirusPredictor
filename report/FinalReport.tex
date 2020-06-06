@@ -93,7 +93,7 @@ Complete data is returned in Pandas DataFrame.
 Main class contain methods which implement steps easy to split for external resources e.g. GUI applications:
 \begin{itemize}
 \item \textit{load\_data} - implements data gathering model to load data from web or local file. It is possible to provide data also as complete DataFrame during object initialization.
-\item \textit{set\_predict\_horizon} - sets data up to which next data points should be predicted. Data should be datatime object from datatime library.
+\item \textit{set\_predict\_horizon} - sets dates in which next data points should be predicted. Dates should be datatime object from datatime library.
 \item \textit{train\_AR} - method which trains Autoregression model based on previously loaded data.
 \item \textit{train\_MA} - method which trains Autoregressive Integrated Moving Average model based on previously loaded data.
 \item \textit{predict} - Because it is possible to alternatively train model with two separate methods then this method uses one of models (the one that was run as last) and predicts next data points up to predict horizon.
