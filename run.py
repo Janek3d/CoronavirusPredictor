@@ -36,12 +36,14 @@ def load_data(n_clicks, contents, filename, value):
 @app.callback(
     Output('covid-graph', 'children'),
     [Input('predict-button', 'n_clicks')],
-    [State('horizon-picker', 'date'),
+    [State('horizon-picker', 'start_date'),
+     State('horizon-picker', 'end_date'),
      State('model-radio', 'value')])
-def predict(n_clicks, date, value):
+def predict(n_clicks, start_date, end_date, value):
     if n_clicks:
-        date = datetime.strptime(re.split('T| ', date)[0], '%Y-%m-%d')
-        covid_estimator.set_predict_horizon(date)
+        start_date = datetime.strptime(re.split('T| ', start_date)[0], '%Y-%m-%d')
+        end_date = datetime.strptime(re.split('T| ', end_date)[0], '%Y-%m-%d')
+        covid_estimator.set_predict_horizon(start_date, end_date)
         if value == "AR":
             covid_estimator.train_AR()
         else:
