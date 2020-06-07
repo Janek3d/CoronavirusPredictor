@@ -40,41 +40,58 @@ Current coronavirus pandemic started in chinese Wuhan, in December 2019. On 11 M
  characterized as pandemic which became global problem. On 4 March first case in Poland appeared. From this time number of confirmed cases was steadily increasing.
  Month later there was 5000 confirmed cases.
 
-\dots
-
 \section{Problem Description}
 Using databases of confirmed cases, death cases and recovered cases of COVID-19 we can create model which can give us predictions of future cases.
  Based on these prediction decisions can be made regarding public restrictions and other regulations.
-% może jakieś wykresy wzrostu dać czy co innego
 
-\dots
+ \begin{figure}[h!]
+    \includegraphics[width=\linewidth]{images/Correlation_lag_Deaths.png}
+    \caption{a) Time series of confirmed, death and recovered cases. b) Lag plot of death cases}
+    \label{fig:lag_plot}
+\end{figure}
+
+The time series plot indicates relationship among the series. Linear shape of lag plot suggest positive autocorrelation between next values of death cases.
+ This suggest that using autoregression (AR) model is good choice.
+Randomness of the time series can be checked by autocorrelation plot of the time series. 
+
+\begin{figure}[h!]
+    \includegraphics[width=\linewidth]{images/AutoCorrelation.png}
+    \caption{Autocorrelation of the time series}
+    \label{fig:AutoCorrelation}
+\end{figure}
+
+For non-random time series autocorrelations are significantly non-zero. Above figure shows that lag values about 10 are worth considering. 
+ Such high autocorrelation values further proves viability of AR model.
+
+There might be also relation of death cases with confirmed and recovered cases. Pairplot confirms our suspicion showing high correlation with both of them
+
+\begin{figure}[h!]
+    \includegraphics[width=\linewidth]{images/Correlation.png}
+    \caption{Autocorrelation of the time series}
+    \label{fig:AutoCorrelation}
+\end{figure}
+
+To take that variables into account during our predictions VAR model can be used.
+ To use VAR model data two assumptions are needed:
+ \begin{itemize}
+\item all variables must be Stationary,
+\item there exist a linear relation between their current and past values
+\end{itemize}
+
+\begin{figure}[h!]
+    \includegraphics[width=\linewidth]{images/Correlation_lag.png}
+    \caption{Autocorrelation of the time series}
+    \label{fig:AutoCorrelation}
+\end{figure}
+
+Above figure confirms relation between values. Augmented Dickey-Fuller Test is used to check stationarity. If the result of the test indicates that data is non-stationary,
+then data connot be used. Fortunately a difference transform is good way of remowing a systematic structure from time series. It can be done by using
+ pandas.DataFrame.diff().dropna() method. It can be done second time when ADF test is still negative.
+
 
 \section{Domain Implementation}
 % tego nie jestem pewien co powinno być, może coś w czym robimy
 We are using Python enviroment to create application which based on provided data and prediction horizon, makes predictions of number of deaths per day.
- We primarily uses autoregressive (AR) models which are primarily used to describe time-varying processes in nature. This type of model specifies the output
-  variable based on its previous values and stochastic term. Along with moving-average (MA) model it is component of more general autoregressive-moving-average
-  model (ARMA). Dynamic of the autoregressive model of order p AR(p) is given by:
-\begin{equation}
-    X_t = c + \sum_{i=1}^{p} (\phi_iX_{t-i}) + \epsilon_t
-\end{equation}
-where
-p - order of the model\newline
-$ \phi $ - parameters of the model\newline
-c - constant\newline
-$\epsilon_t$ - white noise\newline
-
-
-Moving average model of order q MA(q) is written:
-\begin{equation}
-    X_t = \mu + \epsilon_t + \sum_{i=1}^{q} (\theta_i\epsilon_{t-i})
-\end{equation}
-
-ARMA(p,q) notation refers to AR(p) and MA(q) models:
-\begin{equation}
-    X_t = c + \epsilon_t +\sum_{i=1}^{p} (\phi_iX_{t-i}) + \sum_{i=1}^{q} (\theta_i\epsilon_{t-i})
-\end{equation}
-
 
 Project structure is organised into consistent class which implements methods for gathering data, training machine learning model and data visualization.
 \newline
@@ -129,9 +146,37 @@ Test job was created with tox tool which contains two test jobs.
 One runs unit tests and second one run flake8 command which tests code compability with PEP8 standard.
 
 \section{Machine Learning Models}
-We are using AutoReg function from statsmodel library. This function uses Autoregressive. It uses only vector of values we want to predict.
- We also need to define order of the model.
-\dots
+\subsection{AutoReg}
+We are using AutoReg function from statsmodel library. 
+ It is primarily used  to describe time-varying processes in nature. This type of model specifies the output
+  variable based on its previous values and stochastic term. Along with moving-average (MA) model it is component of more general autoregressive-moving-average
+  model (ARMA). Dynamic of the autoregressive model of order p AR(p) is given by:
+\begin{equation}
+    X_t = c + \sum_{i=1}^{p} (\phi_iX_{t-i}) + \epsilon_t
+\end{equation}
+where
+p - order of the model\newline
+$ \phi $ - parameters of the model\newline
+c - constant\newline
+$\epsilon_t$ - white noise\newline
+
+\subsection{ARMA}
+It is simirial to AR model. MA part involves modeling the error term as linear combination of error terms  occurring contemporaneously and at various times in the past.
+
+
+Moving average model of order q MA(q) is written:
+\begin{equation}
+    X_t = \mu + \epsilon_t + \sum_{i=1}^{q} (\theta_i\epsilon_{t-i})
+\end{equation}
+
+ARMA(p,q) notation refers to AR(p) and MA(q) models:
+\begin{equation}
+    X_t = c + \epsilon_t +\sum_{i=1}^{p} (\phi_iX_{t-i}) + \sum_{i=1}^{q} (\theta_i\epsilon_{t-i})
+\end{equation}
+
+\subsection{VAR}
+Vector autoregression is a stochastic process model used to capture the linear interdependencies among multiple time series. It generalizes univariate AR model by allowing more 
+than one evolving variable. All variables have an equation explaining its evolution based on its own lagged values.
 
 \section{Results}
 \dots
@@ -146,8 +191,8 @@ We are using AutoReg function from statsmodel library. This function uses Autore
 \bibitem{b3} https://journals.ametsoc.org/doi/full/10.1175/JHM517.1
 \bibitem{b4} https://github.com/dtandev/coronavirus
 \bibitem{b5} https://github.com/anuszka/COVID-19-MZ_GOV_PL
-\bibitem{b6}
-\bibitem{b7}
+\bibitem{b6} https://towardsdatascience.com/vector-autoregressions-vector-error-correction-multivariate-model-a69daf6ab618
+\bibitem{b7} https://towardsdatascience.com/granger-causality-and-vector-auto-regressive-model-for-time-series-forecasting-3226a64889a6
 \end{thebibliography}
 \vspace{12pt}
 
