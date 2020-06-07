@@ -108,7 +108,6 @@ def main_layout():
             id='model-radio',
             options=[
                 {'label': 'AR model', 'value': 'AR'},
-                {'label': 'ARMA model', 'value': 'MA'},
                 {'label': 'VAR model', 'value': 'VAR'}
             ],
             value='AR',

@@ -48,8 +48,6 @@ def predict(n_clicks, start_date, end_date, value):
             covid_estimator.train_AR()
         elif value == 'VAR':
             covid_estimator.train_VAR()
-        else:
-            covid_estimator.train_MA()
         covid_estimator.predict()
         return [covid_estimator.get_dcc_Graph()]
 

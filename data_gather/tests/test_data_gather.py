@@ -22,9 +22,9 @@ mock_create_data = {
     "windows.test.dtandev":
     "Timestamp,Confirmed,Deaths,Recovered,In_the_hospital,In_quarantine,Under_medical_supervision,Number_of_tests_carried_out\\r\\n03-03-2020,0,0,0,68,316,4459,559\\r\\n04-03-2020,1,1,0,65,349,4540,584",
     "linux.test.anuszka":
-    'Data,Dzień,Wykryci zakażeni,Testy,Hospitalizowani,Zmarli,Kwarantanna,Nadzór,"Testy, wartości przybliżone",Kwarantanna po powrocie do kraju,Wydarzenia,Wyzdrowiali,Testowane osoby\n03/03/20,,,,,0,,,,,,,\n04/03/20,,,,,1,,,,,,,',
+    'Data,Dzień,Wykryci zakażeni,Testy,Hospitalizowani,Zmarli,Kwarantanna,Nadzór,"Testy, wartości przybliżone",Kwarantanna po powrocie do kraju,Wydarzenia,Wyzdrowiali,Testowane osoby\n03/03/20,,0,,,0,,,,,,0,\n04/03/20,,1,,,1,,,,,,0,',
     "windows.test.anuszka":
-    'Data,Dzień,Wykryci zakażeni,Testy,Hospitalizowani,Zmarli,Kwarantanna,Nadzór,"Testy, wartości przybliżone",Kwarantanna po powrocie do kraju,Wydarzenia,Wyzdrowiali,Testowane osoby\\r\\n03/03/20,,,,,0,,,,,,,\\r\\n04/03/20,,,,,1,,,,,,,'
+    'Data,Dzień,Wykryci zakażeni,Testy,Hospitalizowani,Zmarli,Kwarantanna,Nadzór,"Testy, wartości przybliżone",Kwarantanna po powrocie do kraju,Wydarzenia,Wyzdrowiali,Testowane osoby\\r\\n03/03/20,,0,,,0,,,,,,0,\\r\\n04/03/20,,1,,,1,,,,,,0,'
 }
 
 
@@ -66,9 +66,17 @@ class TestCreateDataFrame(fake_filesystem_unittest.TestCase):
             0: datetime(2020, 3, 3),
             1: datetime(2020, 3, 4)
         },
+        'Confirmed': {
+            0: 0,
+            1: 1
+        },
         'Deaths': {
             0: 0,
             1: 1
+        },
+        'Recovered': {
+            0: 0,
+            1: 0
         },
         'D2D-deaths': {
             0: 0,
