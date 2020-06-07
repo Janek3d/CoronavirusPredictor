@@ -179,10 +179,27 @@ Vector autoregression is a stochastic process model used to capture the linear i
 than one evolving variable. All variables have an equation explaining its evolution based on its own lagged values.
 
 \section{Results}
-\dots
+Predictions done by AR model are presented below
+
+\begin{figure}[h!]
+    \includegraphics[width=\linewidth]{images/AR_pred.png}
+    \caption{AR model predictions}
+    \label{fig:AR_pred}
+\end{figure}
+Mean Squared Error is 75.069 and Mean Absolute Error is 6.875. 
+
+For VAR model predictions are less accurate as presented below
+\begin{figure}[h!]
+    \includegraphics[width=\linewidth]{images/VAR_pred.png}
+    \caption{VAR model predictions}
+    \label{fig:VAR_pred}
+\end{figure}
+Mean Squared Error is 46758.033 and Mean Absolute Error is 63.003. Not only this model needs more resources but it produces worse results.
+
 
 \section{Summary}
-\dots
+It's fairly easy to create prediction model for COVID-19 data. But model needs more finetunnig to be accurate. Also it can not forecast big outbursts. These deviations can lead to 
+bad predictions. Both models are susceptible to these as death and recovered cases are mainly influenced by number of confirmed cases.
 
 
 \begin{thebibliography}{00}
