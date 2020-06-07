@@ -5,6 +5,8 @@ import numpy as np
 import pandas as pd
 from statsmodels.tsa.ar_model import AutoReg
 from statsmodels.tsa.arima_model import ARMA
+from statsmodels.tsa.api import VAR
+from statsmodels.tsa.vector_ar.var_model import VARResultsWrapper
 
 from data_gather.data_gather import create_data_frame
 
@@ -21,6 +23,18 @@ class CovidEstimator:
         """
         self._data = data
         self._horizon_min = datetime(2020, 3, 3)
+
+    def invert_transformation(self, df_train, df_forecast, second_diff=False):
+        """Revert back the differencing to get the forecast to original scale."""
+        df_fc = df_forecast.copy()
+        columns = df_train.columns
+        for col in columns:        
+            # Roll back 2nd Diff
+            if second_diff:
+                df_fc[str(col)+'_1d'] = (df_train[col].iloc[-1]-df_train[col].iloc[-2]) + df_fc[str(col)+'_2d'].cumsum()
+            # Roll back 1st Diff
+            df_fc[str(col)+'_forecast'] = df_train[col].iloc[-1] + df_fc[str(col)+'_1d'].cumsum()
+        return df_fc
 
     def set_predict_horizon(self, horizon_min, horizon_max):
         """Set predict horizon to which estimator should predict newxt data points
@@ -65,11 +79,33 @@ class CovidEstimator:
         model = ARMA(self._data["Deaths"], order=(1, 0))
         self._model = model.fit()
 
+    def train_VAR(self):
+        data_diff = self._data.diff().dropna()
+        self._data_diff2 = data_diff.diff().dropna()
+        model = VAR(self._data_diff2[['Confirmed','Deaths','Recovered']])
+        self._model = model.fit(maxlags=15, ic='aic')
+
     def predict(self):
         """Predict next data points based on set horizon and created model
         In order to run predict please first run set_predict_horizon() and train_*() function.
         """
-        if self._horizon is not None and self._model is not None:
+        if isinstance(self._model, VARResultsWrapper):
+            predicted_data = self._model.forecast(self._data_diff2[[
+                'Confirmed','Deaths','Recovered']].values[-len(self._horizon)+1:], len(self._horizon))
+            pred_diff = pd.DataFrame(predicted_data, columns=['Confirmed','Deaths','Recovered'])
+            pred_diff.columns+='_2d'
+            X_train =  self._data[[
+                'Confirmed','Deaths','Recovered']][0:-len(self._horizon)]
+            df_result = self.invert_transformation(X_train,pred_diff,second_diff=True)
+            df_result['D2D-deaths'] = df_result['Deaths_forecast']-df_result['Deaths_forecast'].shift(1,fill_value=0)
+            self._predicted_data = df_result['D2D-deaths']
+            self._predicted_data = pd.concat([
+                pd.Series(
+                    self._data.loc[self._data['Timestamp']==self._horizon_min]["D2D-deaths"]),
+                self._predicted_data
+            ])
+
+        elif self._horizon is not None and self._model is not None:
             self._predicted_data = self._model.predict(
                 len(self._data),
                 len(self._data) + len(self._horizon))

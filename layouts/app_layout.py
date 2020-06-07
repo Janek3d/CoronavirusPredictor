@@ -108,7 +108,8 @@ def main_layout():
             id='model-radio',
             options=[
                 {'label': 'AR model', 'value': 'AR'},
-                {'label': 'MA model', 'value': 'MA'}
+                {'label': 'ARMA model', 'value': 'MA'},
+                {'label': 'VAR model', 'value': 'VAR'}
             ],
             value='AR',
             labelStyle={'display': 'inline-block'}
