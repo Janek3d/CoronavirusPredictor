@@ -6,7 +6,7 @@ from datetime import datetime
 import flask
 import re
 
-from layouts.app_layout import main_layout, data_loaded_info
+from layouts.app_layout import main_layout
 from callbacks.callbacks import CovidEstimator
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -19,7 +19,7 @@ covid_estimator = CovidEstimator()
 
 
 @app.callback(
-    Output('info-out', 'children'),
+    Output('load-info', 'children'),
     [Input('url-button', 'n_clicks'),
      Input('upload-data', 'contents')],
     [State('upload-data', 'filename'),
@@ -31,7 +31,7 @@ def load_data(n_clicks, contents, filename, value):
             covid_estimator.load_data(filename)
         else:
             covid_estimator.load_data(value, web=True)
-        return data_loaded_info()
+        return 'Data loaded'
 
 @app.callback(
     Output('covid-graph', 'children'),
@@ -49,7 +49,7 @@ def predict(n_clicks, start_date, end_date, value):
         else:
             covid_estimator.train_MA()
         covid_estimator.predict()
-        return covid_estimator.get_dcc_Graph()
+        return [covid_estimator.get_dcc_Graph()]
 
 
 if __name__ == '__main__':
