@@ -54,7 +54,7 @@ class CovidEstimator:
         """
         if len(self._data) < 3:
             raise Exception('Please provide data with more points')
-        model = AutoReg(self._data["D2D-deaths"], lags=int(len(self._data) / 3))
+        model = AutoReg(self._data["Deaths"], lags=int(len(self._data) / 3))
         self._model = model.fit()
 
     def train_MA(self):
@@ -62,7 +62,7 @@ class CovidEstimator:
         """
         if len(self._data) < 3:
             raise Exception('Please provide data with more points')
-        model = ARMA(self._data["D2D-deaths"], order=(3, 1))
+        model = ARMA(self._data["Deaths"], order=(1, 0))
         self._model = model.fit()
 
     def predict(self):
@@ -72,7 +72,8 @@ class CovidEstimator:
         if self._horizon is not None and self._model is not None:
             self._predicted_data = self._model.predict(
                 len(self._data),
-                len(self._data) + len(self._horizon))[2:]
+                len(self._data) + len(self._horizon))
+            self._predicted_data = (self._predicted_data - self._predicted_data.shift(1, fill_value=0))[2:]
             self._predicted_data = pd.concat([
                 pd.Series(
                     self._data.loc[self._data['Timestamp']==self._horizon_min]["D2D-deaths"]),

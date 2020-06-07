@@ -66,6 +66,10 @@ class TestCreateDataFrame(fake_filesystem_unittest.TestCase):
             0: datetime(2020, 3, 3),
             1: datetime(2020, 3, 4)
         },
+        'Deaths': {
+            0: 0,
+            1: 1
+        },
         'D2D-deaths': {
             0: 0,
             1: 1
