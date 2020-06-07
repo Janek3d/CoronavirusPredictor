@@ -53,7 +53,7 @@ def create_data_frame(source, web=False):
     """
     if web:
         source = download_data_from_web(source)
-    data = read_csv(source)#, lineterminator=os.linesep)
+    data = read_csv(source, lineterminator=os.linesep)
     if 'Zmarli' in data.columns:
         return parse_anuszka_format(data)
     elif 'Deaths' in data.columns:

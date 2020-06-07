@@ -71,14 +71,6 @@ class CovidEstimator:
         model = AutoReg(self._data["Deaths"], lags=int(len(self._data) / 3))
         self._model = model.fit()
 
-    def train_MA(self):
-        """Train Autoregressive Integrated Moving Average
-        """
-        if len(self._data) < 3:
-            raise Exception('Please provide data with more points')
-        model = ARMA(self._data["Deaths"], order=(1, 0))
-        self._model = model.fit()
-
     def train_VAR(self):
         data_diff = self._data.diff().dropna()
         self._data_diff2 = data_diff.diff().dropna()
