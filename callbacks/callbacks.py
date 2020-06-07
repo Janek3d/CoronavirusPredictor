@@ -77,6 +77,12 @@ class CovidEstimator:
         model = VAR(self._data_diff2[['Confirmed','Deaths','Recovered']])
         self._model = model.fit(maxlags=15, ic='aic')
 
+    def train_VAR(self):
+        data_diff = self._data.diff().dropna()
+        self._data_diff2 = data_diff.diff().dropna()
+        model = VAR(self._data_diff2[['Confirmed','Deaths','Recovered']])
+        self._model = model.fit(maxlags=15, ic='aic')
+
     def predict(self):
         """Predict next data points based on set horizon and created model
         In order to run predict please first run set_predict_horizon() and train_*() function.
