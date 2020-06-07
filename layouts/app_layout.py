@@ -83,23 +83,6 @@ def predict_horizon_layout():
         )
     ])
 
-def graph_layout():
-    """Function for generating dummy graph layout with its components.
-
-    :return: Graph layout as dash component
-    :rtype: dash.development.base_component.ComponentMeta
-    """
-    return html.Div([
-        html.H4(
-            id='info-out',
-            children=""
-        ),
-        html.H1(
-            id='covid-graph',
-            children=""
-        ),
-    ])
-
 def main_layout():
     """Create main layout for app
 
@@ -133,9 +116,13 @@ def main_layout():
         html.Button(
             'Predict',
             id='predict-button',
-        )
+        ),
+        html.Div(
+            id='load-info'        )
         ]),
-        graph_layout(),
+        html.Div(
+            id='covid-graph',
+        ),
     ],
         style={
             'text-align': 'center',
@@ -147,14 +134,3 @@ def main_layout():
             'height': '100%',
             'backgroundColor': '#FFFFFF'
     })
-
-def data_loaded_info():
-    """Get simple information that data has been loaded
-
-    :return: Header with information
-    :rtype: dash.development.base_component.ComponentMeta
-    """
-    return html.H4(
-        children="Data loaded",
-        id='covid-graph'
-    )

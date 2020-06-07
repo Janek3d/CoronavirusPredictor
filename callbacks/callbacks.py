@@ -127,7 +127,7 @@ class CovidEstimator:
                     margin=dict(l=40, r=0, t=40, b=30)
                 )
             ),
-            id='covid-graph'
+            id='graph'
         )
 
     @property
