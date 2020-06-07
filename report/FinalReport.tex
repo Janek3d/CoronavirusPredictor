@@ -112,7 +112,7 @@ Main class contain methods which implement steps easy to split for external reso
 \item \textit{load\_data} - implements data gathering model to load data from web or local file. It is possible to provide data also as complete DataFrame during object initialization.
 \item \textit{set\_predict\_horizon} - sets dates in which next data points should be predicted. Dates should be datatime object from datatime library.
 \item \textit{train\_AR} - method which trains Autoregression model based on previously loaded data.
-\item \textit{train\_MA} - method which trains Autoregressive Integrated Moving Average model based on previously loaded data.
+\item \textit{train\_VAR} - method which trains Vector Autoregression model based on previously loaded data.
 \item \textit{predict} - Because it is possible to alternatively train model with two separate methods then this method uses one of models (the one that was run as last) and predicts next data points up to predict horizon.
 \item \textit{plt} - this method prints out matplotlib plot with actual data and predicted data points.
 \item \textit{get\_dcc\_Graph} - this method returns Dash Core Components Graph with actual data and predicted data which may be used with GUI applications created in Dash
