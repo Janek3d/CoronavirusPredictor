@@ -1,6 +1,11 @@
-# Python Project for Python programming and data analysis
+# CoronavirusPredictor - Python Project for Python programming and data analysis
 
 Authors: Szymon Krasuski & Janusz Mikłuszka
+
+# Origins
+Project was developed for Python Programming classed at Warsaw University of Technology conducted by Robert Szmurło.
+The purpose of this project is to develop application which use 2 machine learning algorithms to predict coronavirus cases spread in Poland.
+Second part of the project takes results from research on two algorithms and compare them.
 
 # Setup
 In order to setup python evnironment required is Python >=3.6 (At least code was not tested with versions before 3.6).
